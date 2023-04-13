@@ -59,8 +59,8 @@ export default class GraphNode {
 
     const arr = params.direction === "in" ? this._inboundEdge : this._outboundEdge;
     arr.push({
-      startNode: this,
-      endNode: params.node,
+      startNode: params.direction === "in" ? params.node : this,
+      endNode: params.direction === "out" ? params.node : this,
       weight: params.weight,
       data: params.data,
     });
