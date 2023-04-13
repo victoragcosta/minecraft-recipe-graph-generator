@@ -1,0 +1,21 @@
+{
+  "name": "minecraft-recipe-graph-generator",
+  "version": "0.0.0",
+  "description": "Creates a graph and visualization of the recipes contained in a set of mods and minecraft version",
+  "main": "main.js",
+  "author": {
+    "name": ""
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "run": "npm run build && node main.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@types/node": "^18.15.11",
+    "fs-extra": "^11.1.1"
+  }
+}
