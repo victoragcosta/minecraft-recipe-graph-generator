@@ -1,8 +1,4 @@
-import {
-  readdirSync,
-  moveSync,
-  removeSync
-} from "fs-extra";
+import { readdirSync } from "fs";
 import type { PathLike } from "fs";
 import { exec } from "child_process";
 
