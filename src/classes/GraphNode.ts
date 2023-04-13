@@ -6,7 +6,8 @@ export type GraphNodeParams = {
 export type GraphEdge = {
   data?: unknown,
   weight: number,
-  node: GraphNode,
+  startNode: GraphNode,
+  endNode: GraphNode,
 }
 
 export type GraphEdgeParams = {
@@ -58,7 +59,8 @@ export default class GraphNode {
 
     const arr = params.direction === "in" ? this._inboundEdge : this._outboundEdge;
     arr.push({
-      node: params.node,
+      startNode: this,
+      endNode: params.node,
       weight: params.weight,
       data: params.data,
     });
@@ -68,7 +70,7 @@ export default class GraphNode {
   public removeEdge(node: GraphNode, direction: "in" | "out"): GraphEdge {
     const arr = direction === "in" ? this._inboundEdge : this._outboundEdge;
 
-    const edgeIndex = arr.findIndex(({ node: n }) => n === node);
+    const edgeIndex = arr.findIndex(({ endNode: n }) => n === node);
 
     // Assertions
     if (edgeIndex === -1) {
