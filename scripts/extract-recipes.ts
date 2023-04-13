@@ -4,7 +4,6 @@ import { exec } from "child_process";
 
 function listJarFiles(jarPath: PathLike): Promise<string> {
   return new Promise((res, rej) => {
-    // const extraCommand = ` | grep "data/[^/]*/\\(recipes\\|tags\\|loot_tables\\)"`;
     const extraCommand = "";
     exec(`jar -tf "${jarPath}"${extraCommand}`, { maxBuffer: 1024 * 1024 * 50 }, (error, stdout, stderr) => {
       if (error) {
@@ -24,7 +23,7 @@ function extractJarFiles(jarPath: PathLike, paths: PathLike[]): Promise<string> 
   return new Promise(async (res, rej) => {
     const items = paths.map((p) => `"${p}"`).join(" ");
 
-    exec(`jar -xf "../${jarPath}" ${items}`, { maxBuffer: 1024 * 1024 * 50 }, (error, stdout, stderr) => {
+    exec(`jar -xf "${jarPath}" ${items}`, { maxBuffer: 1024 * 1024 * 50 }, (error, stdout, stderr) => {
       if (error) {
         rej(error);
         return;
@@ -46,7 +45,11 @@ function filterRecipesFolders(files: string): Set<string> {
 async function main() {
   try {
     const jarsPath = "./jars";
-    const files: string[] = readdirSync(jarsPath);
+    const files: string[] = readdirSync(jarsPath)
+      .filter((f) => /.*\.jar/.test(f));
+    console.log(
+      `Found ${files.length} ${files.length !== 1 ? "files" : "file"}`
+    );
     for (const file of files) {
       const jarPath = `${jarsPath}/${file}`;
       const jarOutput = await listJarFiles(jarPath);

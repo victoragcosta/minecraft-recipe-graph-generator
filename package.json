@@ -2,14 +2,15 @@
   "name": "minecraft-recipe-graph-generator",
   "version": "0.0.0",
   "description": "Creates a graph and visualization of the recipes contained in a set of mods and minecraft version",
-  "main": "main.js",
+  "main": "src/main.js",
   "author": {
-    "name": ""
+    "name": "Victor Gris"
   },
   "scripts": {
-    "build": "tsc --build",
-    "clean": "tsc --build --clean",
-    "run": "npm run build && node main.js"
+    "ts:build": "tsc --build",
+    "ts:clean": "tsc --build --clean",
+    "generate-graph": "npm run ts:build && node scripts/generate-graph.js",
+    "extract-recipes": "npm run ts:build && node scripts/extract-recipes.js"
   },
   "devDependencies": {
     "typescript": "^5.0.4"
