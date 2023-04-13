@@ -1,5 +1,13 @@
+# IDE configs
+.vscode
+
+# Project input
 jars/*.jar
-data
+
+# Packages
 node_modules
+
+# Compilation output
+data
 *.js
 *.js.map
