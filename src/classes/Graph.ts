@@ -1,3 +1,8 @@
+import {
+  NodeNotFoundError,
+  EdgeNotFoundError,
+  InconsistentGraphError,
+} from "./GraphErrors";
 import GraphNode, { GraphEdge } from "./GraphNode";
 
 type OutboundInboundGraphEdge = {
@@ -10,27 +15,6 @@ export type AddEdgeParams = {
   end: GraphNode,
   weight?: number,
   data?: unknown,
-}
-
-export class GraphError extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
-export class NodeNotFoundError extends GraphError {
-  constructor() {
-    super("Node Not Found: the specified node was not found inside the graph.");
-  }
-}
-export class EdgeNotFoundError extends GraphError {
-  constructor() {
-    super("Edge Not Found: the specified edge was not found inside the graph.");
-  }
-}
-export class InconsistentGraphError extends GraphError {
-  constructor(message: string) {
-    super(`Inconsistent Graph Error: ${message}`);
-  }
 }
 
 export default class Graph {

@@ -1,3 +1,7 @@
+import {
+  NoEdgeError,
+  UnconnectedGraphEdgeError,
+} from "./GraphErrors";
 
 export type GraphNodeParams = {
   data?: unknown,
@@ -15,17 +19,6 @@ export type GraphEdgeParams = {
   direction: "in" | "out",
   weight?: number,
   data?: unknown,
-}
-
-export class UnconnectedGraphEdgeError extends Error {
-  constructor() {
-    super(`Unconnected Graph Error: graph edge lacks a node`);
-  }
-}
-export class NoEdgeError extends Error {
-  constructor() {
-    super(`No Edge Error: this node doesn't have an edge to this node.`);
-  }
 }
 
 export default class GraphNode {
