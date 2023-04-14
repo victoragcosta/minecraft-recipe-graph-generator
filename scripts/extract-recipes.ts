@@ -1,6 +1,14 @@
-import { readdirSync } from "fs";
+import { readdirSync, rmSync, mkdirSync, existsSync } from "fs";
 import type { PathLike } from "fs";
 import { exec } from "child_process";
+
+function createCleanDir(name: string) {
+  const exists = existsSync(name);
+  if (exists) {
+    rmSync(name, { recursive: true, force: true });
+  }
+  mkdirSync(name);
+}
 
 function listJarFiles(jarPath: PathLike): Promise<string> {
   return new Promise((res, rej) => {
@@ -44,18 +52,35 @@ function filterRecipesFolders(files: string): Set<string> {
 
 async function main() {
   try {
-    const jarsPath = "./jars";
+    const baseDirectory = process.cwd();
+    const jarsPath = `${baseDirectory}/jars`;
+    const extractFolder = `${baseDirectory}/extract-data`;
+
+    // Clear the extraction folder
+    createCleanDir(extractFolder);
+
+    // Get all jar files names
     const files: string[] = readdirSync(jarsPath)
       .filter((f) => /.*\.jar/.test(f));
     console.log(
       `Found ${files.length} ${files.length !== 1 ? "files" : "file"}`
     );
+
+    // Extract each jar file
     for (const file of files) {
+      const extractionPath = `${extractFolder}/${file.replace(/.jar$/, "")}`;
       const jarPath = `${jarsPath}/${file}`;
+      // Get the files inside the jar
       const jarOutput = await listJarFiles(jarPath);
+      // List only the relevant ones
       const result = filterRecipesFolders(jarOutput);
+      console.log([...result]);
+      // Extract if there is relevant data
       if (result.size > 0) {
+        mkdirSync(extractionPath)
+        process.chdir(extractionPath);
         await extractJarFiles(jarPath, [...result]);
+        process.chdir(baseDirectory);
       }
       console.log(`Extracted: ${file}`);
     }
