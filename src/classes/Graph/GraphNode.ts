@@ -3,15 +3,10 @@ import {
   UnconnectedGraphEdgeError,
 } from "./GraphErrors";
 
+import GraphEdge from "./GraphEdge";
+
 export type GraphNodeParams = {
   data?: unknown,
-}
-
-export type GraphEdge = {
-  data?: unknown,
-  weight: number,
-  startNode: GraphNode,
-  endNode: GraphNode,
 }
 
 export type GraphEdgeParams = {

@@ -3,7 +3,8 @@ import {
   EdgeNotFoundError,
   InconsistentGraphError,
 } from "./GraphErrors";
-import GraphNode, { GraphEdge } from "./GraphNode";
+import GraphNode from "./GraphNode";
+import GraphEdge from "./GraphEdge";
 
 type OutboundInboundGraphEdge = {
   outbound: GraphEdge,
