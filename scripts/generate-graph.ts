@@ -2,7 +2,7 @@
 
 import { readdirSync, existsSync } from "fs";
 
-function loadRecursivelyGeneric(recipeFolder: string, loader: (path: string)=>void) {
+function loadRecursively(recipeFolder: string, loader: (path: string)=>void) {
   if (!existsSync(recipeFolder)) {
     return;
   }
@@ -10,7 +10,7 @@ function loadRecursivelyGeneric(recipeFolder: string, loader: (path: string)=>vo
   const recipeFolderItems = readdirSync(recipeFolder, { withFileTypes: true });
   for (const recipeFolderItem of recipeFolderItems) {
     if (recipeFolderItem.isDirectory()) {
-      loadRecursivelyGeneric(`${recipeFolder}/${recipeFolderItem.name}`, loader);
+      loadRecursively(`${recipeFolder}/${recipeFolderItem.name}`, loader);
     } else if (recipeFolderItem.isFile()) {
       loader(`${recipeFolder}/${recipeFolderItem.name}`);
     }
