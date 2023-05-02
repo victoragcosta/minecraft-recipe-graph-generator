@@ -1,5 +1,6 @@
 # IDE configs
-.vscode
+.vscode/*
+!.vscode/settings.json
 
 # Project input
 jars/*.jar

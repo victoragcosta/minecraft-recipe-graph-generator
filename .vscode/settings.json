@@ -1,0 +1,7 @@
+{
+  "[javascript][typescript][svelte][html][css][scss][markdown][mdx][json][jsonc]": {
+    // Formatter
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+  }
+}
