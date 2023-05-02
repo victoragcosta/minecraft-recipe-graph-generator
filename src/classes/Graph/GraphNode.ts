@@ -5,23 +5,23 @@ import {
 
 import GraphEdge from "./GraphEdge";
 
-export type GraphNodeParams = {
-  data?: unknown,
+export type GraphNodeParams<D=unknown> = {
+  data?: D,
 }
 
-export type GraphEdgeParams = {
+export type GraphEdgeParams<D=unknown> = {
   node: GraphNode,
   direction: "in" | "out",
   weight?: number,
-  data?: unknown,
+  data?: D,
 }
 
-export default class GraphNode {
-  private _outboundEdge: GraphEdge[];
-  private _inboundEdge: GraphEdge[];
-  public data: unknown;
+export default class GraphNode<D=unknown> {
+  protected _outboundEdge: GraphEdge[];
+  protected _inboundEdge: GraphEdge[];
+  public data: D;
 
-  constructor(params: GraphNodeParams) {
+  constructor(params: GraphNodeParams<D>) {
     this.data = params.data;
     this._inboundEdge = [];
     this._outboundEdge = [];
@@ -34,7 +34,7 @@ export default class GraphNode {
     return this._inboundEdge;
   }
 
-  public addEdge(params: GraphEdgeParams) {
+  public addEdge(params: GraphEdgeParams<D>) {
     // Assertions
     if (!params.node) {
       throw new UnconnectedGraphEdgeError();
