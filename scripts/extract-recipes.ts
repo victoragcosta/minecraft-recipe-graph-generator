@@ -57,7 +57,8 @@ function extractJarFiles(
 }
 
 function filterRecipesFolders(files: string): Set<string> {
-  const regex = /data\/[^/]*\/(?:tags|recipes|loot_tables)\//g;
+  const regex =
+    /(data\/[^/]*\/(?:tags|recipes|loot_tables)\/|assets\/[^/]*\/(?:lang|models|textures)\/)/g;
   return new Set(files.match(regex));
 }
 
