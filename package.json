@@ -9,8 +9,8 @@
   "scripts": {
     "ts:build": "tsc --build",
     "ts:clean": "tsc --build --clean",
-    "generate-graph": "npm run ts:build && node -r source-map-support/register scripts/generate-graph.js",
-    "extract-recipes": "npm run ts:build && node -r source-map-support/register scripts/extract-recipes.js"
+    "generate-graph": "npm run ts:build && node -r source-map-support/register dist/scripts/generate-graph.js",
+    "extract-recipes": "npm run ts:build && node -r source-map-support/register dist/scripts/extract-recipes.js"
   },
   "devDependencies": {
     "typescript": "^5.0.4"

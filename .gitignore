@@ -9,6 +9,7 @@ jars/*.jar
 node_modules
 
 # Compilation output
-data
+extract-data
+dist
 *.js
 *.js.map
