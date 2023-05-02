@@ -5,6 +5,7 @@ import {
 } from "./GraphErrors";
 import GraphNode from "./GraphNode";
 import GraphEdge from "./GraphEdge";
+import { indent } from "../../utils";
 
 type OutboundInboundGraphEdge = {
   outbound: GraphEdge;
@@ -137,5 +138,54 @@ export default class Graph {
     inbound.endNode.removeEdge(inbound.startNode, "in");
 
     return outbound;
+  }
+
+  public toGraphMl() {
+    const rootTag = (innerXml) =>
+      `<?xml version="1.0" encoding="UTF-8"?>\n` +
+      `<graphml\n` +
+      `  xmlns="http://graphml.graphdrawing.org/xmlns"\n` +
+      `  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n` +
+      `  xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"\n` +
+      `>\n` +
+      `${indent(innerXml)}\n` +
+      `</graphml>`;
+    const graphTag = (innerXml) =>
+      `<graph id="G" edgedefault="directed">\n` +
+      `${indent(innerXml)}\n` +
+      `</graph>`;
+
+    const nodeAttributesDefinition = [
+      ...new Set(
+        this._nodeList
+          .map((n) => n.attributes.toGraphMlDefinition("node"))
+          .reduce((p, c) => p.concat(c), [])
+      ),
+    ];
+    const edgeAttributesDefinition = [
+      ...new Set(
+        this._nodeList
+          .map((n) =>
+            n.outboundEdge
+              .map((e) => e.attributes.toGraphMlDefinition("edge"))
+              .reduce((p, c) => p.concat(c), [])
+          )
+          .reduce((p, c) => p.concat(c))
+      ),
+    ];
+
+    const nodesXml = this._nodeList.map((n) => n.toGraphMl()).join("\n");
+    const edgesXml = this._nodeList
+      .map((n) => n.outboundEdge.map((e) => e.toGraphMl()))
+      .reduce((p, c) => p.concat(c))
+      .join("\n");
+
+    return rootTag(
+      nodeAttributesDefinition.join("\n") +
+        "\n" +
+        edgeAttributesDefinition.join("\n") +
+        "\n" +
+        graphTag(nodesXml + "\n" + edgesXml)
+    );
   }
 }

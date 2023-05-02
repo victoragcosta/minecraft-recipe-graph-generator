@@ -6,27 +6,35 @@ import {
 
 import GraphEdge from "./GraphEdge";
 import GraphAttributes from "./GraphAttributes";
+import { indent } from "../../utils";
 
 export type GraphNodeParams<A extends GraphAttributes = GraphAttributes> = {
-  attributes?: A,
-}
+  attributes?: A;
+};
+
+let nodeCounter = 0;
 
 export default class GraphNode<A extends GraphAttributes = GraphAttributes> {
   protected _outboundEdge: GraphEdge[];
   protected _inboundEdge: GraphEdge[];
+  private _id: number;
   public attributes: A;
 
   constructor(params: GraphNodeParams<A>) {
     this.attributes = params.attributes;
     this._inboundEdge = [];
     this._outboundEdge = [];
+    this._id = nodeCounter++;
   }
 
-  public get outboundEdge() : GraphEdge[] {
+  public get outboundEdge(): GraphEdge[] {
     return this._outboundEdge;
   }
-  public get inboundEdge() : GraphEdge[] {
+  public get inboundEdge(): GraphEdge[] {
     return this._inboundEdge;
+  }
+  public get id(): number {
+    return this._id;
   }
 
   public addEdge(edge: GraphEdge) {
@@ -68,5 +76,11 @@ export default class GraphNode<A extends GraphAttributes = GraphAttributes> {
     }
 
     arr.splice(edgeIndex, 1);
+  }
+
+  public toGraphMl() {
+    const nodeXml = (innerXml: string) =>
+      `<node id="n${this._id}">\n${indent(innerXml)}\n</node>`;
+    return nodeXml(this.attributes.toGraphMl());
   }
 }

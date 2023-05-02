@@ -13,3 +13,4 @@ extract-data
 dist
 *.js
 *.js.map
+generatedGraph.graphml

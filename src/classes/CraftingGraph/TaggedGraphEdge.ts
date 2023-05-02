@@ -2,7 +2,7 @@ import GraphAttributes from "../Graph/GraphAttributes";
 import GraphEdge, { GraphEdgeParams } from "../Graph/GraphEdge";
 
 class TaggedGraphEdgeAttributes extends GraphAttributes {
-  declare public data: {};
+  public declare data: {};
 
   constructor() {
     super();
@@ -15,7 +15,7 @@ export default class TaggedGraphEdge extends GraphEdge<TaggedGraphEdgeAttributes
   constructor(params: TaggedGraphEdgeParams) {
     super({
       ...params,
-      attributes: {data:{}},
-    })
+      attributes: new TaggedGraphEdgeAttributes(),
+    });
   }
 }
