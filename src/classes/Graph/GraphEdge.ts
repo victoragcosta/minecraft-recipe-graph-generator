@@ -1,21 +1,19 @@
+import GraphAttributes from "./GraphAttributes";
 import GraphNode from "./GraphNode";
 
-export type GraphEdgeParams = {
-  data?: unknown,
-  weight: number,
+export type GraphEdgeParams<A extends GraphAttributes = GraphAttributes> = {
+  attributes?: A,
   startNode: GraphNode,
   endNode: GraphNode,
 }
 
-export default class GraphEdge {
-  public data?: unknown;
-  public weight: number;
+export default class GraphEdge<A extends GraphAttributes = GraphAttributes> {
+  public attributes?: A;
   public startNode: GraphNode;
   public endNode: GraphNode;
 
-  constructor(params: GraphEdgeParams) {
-    this.data = params.data;
-    this.weight = params.weight;
+  constructor(params: GraphEdgeParams<A>) {
+    this.attributes = params.attributes;
     this.startNode = params.startNode;
     this.endNode = params.endNode;
   }

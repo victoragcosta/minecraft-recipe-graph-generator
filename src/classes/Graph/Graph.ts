@@ -7,16 +7,9 @@ import GraphNode from "./GraphNode";
 import GraphEdge from "./GraphEdge";
 
 type OutboundInboundGraphEdge = {
-  outbound: GraphEdge,
-  inbound: GraphEdge,
-}
-
-export type AddEdgeParams = {
-  start: GraphNode,
-  end: GraphNode,
-  weight?: number,
-  data?: unknown,
-}
+  outbound: GraphEdge;
+  inbound: GraphEdge;
+};
 
 export default class Graph {
   private _nodeList: GraphNode[];
@@ -31,8 +24,8 @@ export default class Graph {
    * @returns The exact same node
    * @throws NodeNotFoundError
    */
-  private findNode(node: GraphNode): GraphNode {
-    const foundNode = this._nodeList.find(n => n === node);
+  protected findNode(node: GraphNode): GraphNode {
+    const foundNode = this._nodeList.find((n) => n === node);
 
     if (!foundNode) {
       throw new NodeNotFoundError();
@@ -47,20 +40,24 @@ export default class Graph {
    * @throws EdgeNotFoundError
    * @throws InconsistentGraphError
    */
-  private findEdge(edge: GraphEdge): OutboundInboundGraphEdge {
+  protected findEdge(edge: GraphEdge): OutboundInboundGraphEdge {
     try {
       const startNode = this.findNode(edge.startNode);
       const endNode = this.findNode(edge.endNode);
 
-      const foundEdge = startNode.outboundEdge.find(e => e === edge);
-      const foundReverseEdge = endNode.inboundEdge.find(e => e === edge);
+      const foundEdge = startNode.outboundEdge.find((e) => e === edge);
+      const foundReverseEdge = endNode.inboundEdge.find((e) => e === edge);
 
       if (!foundEdge && !foundReverseEdge) {
         throw new EdgeNotFoundError();
       } else if (!foundEdge) {
-        throw new InconsistentGraphError("there's the outbound but not the inbound edge in the graph.");
+        throw new InconsistentGraphError(
+          "there's the outbound but not the inbound edge in the graph."
+        );
       } else if (!foundReverseEdge) {
-        throw new InconsistentGraphError("there's the inbound edge but not the outbound edge in the graph");
+        throw new InconsistentGraphError(
+          "there's the inbound edge but not the outbound edge in the graph"
+        );
       }
 
       return {
@@ -111,30 +108,18 @@ export default class Graph {
 
   /**
    * Adds a directed edge to this instance of Graph.
-   * @param params The parameters of the edge being added.
-   * @returns The reference to the outbound edge that has been added.
+   * @param edge The instantiated edge that references only nodes in this graph.
    * @throws NodeNotFoundError
    */
-  public addEdge(params: AddEdgeParams): GraphEdge {
-
+  public addEdge(edge: GraphEdge) {
     // Check to see if there are the nodes. Will throw an error if not.
-    const foundStart = this.findNode(params.start);
-    const foundEnd = this.findNode(params.end);
+    const foundStart = this.findNode(edge.startNode);
+    const foundEnd = this.findNode(edge.endNode);
 
     // Add reverse reference to edge
-    foundEnd.addEdge({
-      node: foundStart,
-      direction: "in",
-      weight: params.weight,
-      data: params.data,
-    });
+    foundEnd.addEdge(edge);
     // Add edge
-    return foundStart.addEdge({
-      node: foundEnd,
-      direction: "out",
-      weight: params.weight,
-      data: params.data,
-    });
+    foundStart.addEdge(edge);
   }
   /**
    * Removes an specific edge from this instance of Graph.

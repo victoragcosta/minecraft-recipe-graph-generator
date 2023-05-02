@@ -1,28 +1,23 @@
 import {
   NoEdgeError,
   UnconnectedGraphEdgeError,
+  UnownedGraphEdgeError,
 } from "./GraphErrors";
 
 import GraphEdge from "./GraphEdge";
+import GraphAttributes from "./GraphAttributes";
 
-export type GraphNodeParams<D=unknown> = {
-  data?: D,
+export type GraphNodeParams<A extends GraphAttributes = GraphAttributes> = {
+  attributes?: A,
 }
 
-export type GraphEdgeParams<D=unknown> = {
-  node: GraphNode,
-  direction: "in" | "out",
-  weight?: number,
-  data?: D,
-}
-
-export default class GraphNode<D=unknown> {
+export default class GraphNode<A extends GraphAttributes = GraphAttributes> {
   protected _outboundEdge: GraphEdge[];
   protected _inboundEdge: GraphEdge[];
-  public data: D;
+  public attributes: A;
 
-  constructor(params: GraphNodeParams<D>) {
-    this.data = params.data;
+  constructor(params: GraphNodeParams<A>) {
+    this.attributes = params.attributes;
     this._inboundEdge = [];
     this._outboundEdge = [];
   }
@@ -34,27 +29,20 @@ export default class GraphNode<D=unknown> {
     return this._inboundEdge;
   }
 
-  public addEdge(params: GraphEdgeParams<D>) {
+  public addEdge(edge: GraphEdge) {
     // Assertions
-    if (!params.node) {
+    if (!edge.startNode || !edge.endNode) {
       throw new UnconnectedGraphEdgeError();
     }
 
-    // Default parameters
-    if (params.weight === undefined || params.weight === null) {
-      params.weight = 1;
+    if (edge.startNode !== this && edge.endNode !== this) {
+      throw new UnownedGraphEdgeError();
     }
 
-    const arr = params.direction === "in" ? this._inboundEdge : this._outboundEdge;
-    arr.push(new GraphEdge({
-      startNode: params.direction === "in" ? params.node : this,
-      endNode: params.direction === "out" ? params.node : this,
-      weight: params.weight,
-      data: params.data,
-    }));
-
-    return arr.at(-1);
+    const arr = edge.endNode === this ? this._inboundEdge : this._outboundEdge;
+    arr.push(edge);
   }
+
   public removeEdge(node: GraphNode, direction: "in" | "out"): GraphEdge {
     const arr = direction === "in" ? this._inboundEdge : this._outboundEdge;
 
@@ -68,5 +56,17 @@ export default class GraphNode<D=unknown> {
     const edge = arr[edgeIndex];
     arr.splice(edgeIndex, 1);
     return edge;
+  }
+
+  public removeEdgeByReference(edge: GraphEdge) {
+    const arr = this._inboundEdge.concat(this._outboundEdge);
+    const edgeIndex = arr.findIndex((e) => e === edge);
+
+    // Assertions
+    if (edgeIndex === -1) {
+      throw new NoEdgeError();
+    }
+
+    arr.splice(edgeIndex, 1);
   }
 }

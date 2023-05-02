@@ -31,6 +31,11 @@ export class UnconnectedGraphEdgeError extends GraphNodeError {
     super(`Unconnected Graph Error: graph edge lacks a node`);
   }
 }
+export class UnownedGraphEdgeError extends GraphNodeError {
+  constructor() {
+    super(`Unowned Graph Error: graph edge has no reference to this node`);
+  }
+}
 export class NoEdgeError extends GraphNodeError {
   constructor() {
     super(`No Edge Error: this node doesn't have an edge to this node.`);
