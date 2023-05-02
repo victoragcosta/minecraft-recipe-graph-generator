@@ -1,6 +1,6 @@
 // https://github.com/JayHales/Minecraft-Crafting-Web/blob/master/app.ts
 
-import { readdirSync, existsSync, readFileSync } from "fs";
+import { readdirSync } from "fs";
 import CraftingGraph from "../src/classes/CraftingGraph/CraftingGraph";
 import { loadTags } from "./generate-graph/load-tags";
 
