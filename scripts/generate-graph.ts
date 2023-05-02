@@ -1,12 +1,13 @@
 // https://github.com/JayHales/Minecraft-Crafting-Web/blob/master/app.ts
 
 import { readdirSync, existsSync, readFileSync } from "fs";
-import Graph from "../src/classes/Graph/Graph";
 import TagGraphNode from "../src/classes/CraftingGraph/TagGraphNode";
 import { TagFile } from "../src/types/minecraft_files.types";
 import ItemGraphNode from "../src/classes/CraftingGraph/ItemGraphNode";
+import CraftingGraph from "../src/classes/CraftingGraph/CraftingGraph";
+import TaggedGraphEdge from "../src/classes/CraftingGraph/TaggedGraphEdge";
 
-const generatedGraph = new Graph();
+const generatedGraph = new CraftingGraph();
 
 function loadJson(path: string): unknown {
   const contents = readFileSync(path, { encoding: "utf-8" });
@@ -14,7 +15,7 @@ function loadJson(path: string): unknown {
   return json;
 }
 
-function loadRecursively(folder: string, loader: (path: string)=>void) {
+function loadRecursively(folder: string, loader: (path: string) => void) {
   if (!existsSync(folder)) {
     return;
   }
@@ -30,11 +31,7 @@ function loadRecursively(folder: string, loader: (path: string)=>void) {
   }
 }
 
-const tagTypesToAnalyze = [
-  "blocks",
-  "items",
-  "fluids",
-];
+const tagTypesToAnalyze = ["blocks", "items", "fluids"];
 function loadTags(tagsFolder: string, namespace: string) {
   loadRecursively(tagsFolder, (path: string) => {
     // Get the type of tag
@@ -44,21 +41,33 @@ function loadTags(tagsFolder: string, namespace: string) {
 
     // Cleans the path to what Minecraft uses
     const tagPath = path.replace(`${tagsFolder}/${tagType}/`, "").slice(0, -5);
-    const tagNode = new TagGraphNode(`#${namespace}:${tagPath}`, tagType);
-    generatedGraph.addNode(tagNode);
+    const tag: `#${string}:${string}` = `#${namespace}:${tagPath}`;
+    let tagNode = generatedGraph.findTag(tag);
+    if (tagNode === null) {
+      tagNode = new TagGraphNode(tag, tagType);
+      generatedGraph.addNode(tagNode);
+    }
 
     // Loads file data with all references
     const json = loadJson(path) as TagFile;
     for (const value of json.values) {
-      const itemNode = new ItemGraphNode(value as `${string}:${string}`, tagType);
-      generatedGraph.addNode(itemNode);
-      generatedGraph.addEdge({
-        start: tagNode,
-        end: itemNode,
-        data: {
-          type: "tag",
-        },
-      });
+      let item = value as `${string}:${string}`;
+      if (typeof value !== "string") {
+        item = value.id;
+      }
+      let itemNode = generatedGraph.findItem(item);
+      if (itemNode === null) {
+        itemNode = new ItemGraphNode(item, tagType);
+        generatedGraph.addNode(itemNode);
+      }
+      if (!itemNode.isTaggedWith(tag)) {
+        generatedGraph.addEdge(
+          new TaggedGraphEdge({
+            startNode: tagNode,
+            endNode: itemNode,
+          })
+        );
+      }
     }
   });
 }
@@ -85,7 +94,7 @@ function main() {
     // console.log(`${modsDataFolder}/${modFolder}`);
     loadModData(`${modsDataFolder}/${modFolder}`);
   }
-  console.dir(generatedGraph, {depth: 5});
+  console.dir(generatedGraph, { depth: 5 });
 }
 
 main();
