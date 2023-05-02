@@ -1,7 +1,8 @@
 type TagFileItem =
+  | `#${string}:${string}`
   | `${string}:${string}`
   | {
-      id: `${string}:${string}`;
+      id: `#${string}:${string}` | `${string}:${string}`;
       required: boolean;
     };
 

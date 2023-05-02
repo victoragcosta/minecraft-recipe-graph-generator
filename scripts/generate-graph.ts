@@ -37,6 +37,12 @@ function main() {
     loadModData(`${modsDataFolder}/${modFolder}`);
   }
 
+  const tags = generatedGraph.nodeList.filter((n) => n instanceof TagGraphNode);
+  const items = generatedGraph.nodeList.filter(
+    (n) => n instanceof ItemGraphNode
+  );
+  console.log(`${tags.length} tags and ${items.length} items`);
+
   writeFileSync(
     "./generatedGraph.graphml",
     generatedGraph.toGraphMl(),

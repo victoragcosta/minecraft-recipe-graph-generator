@@ -30,20 +30,34 @@ export function loadTags(
     // Loads file data with all references
     const json = loadJson(path) as TagFile;
     for (const value of json.values) {
-      let item = value as `${string}:${string}`;
+      let itemOrTag = value as `${string}:${string}`;
       if (typeof value !== "string") {
-        item = value.id;
+        itemOrTag = value.id;
       }
-      let itemNode = graph.findItem(item);
-      if (itemNode === null) {
-        itemNode = new ItemGraphNode(item, tagType);
-        graph.addNode(itemNode);
+
+      let itemOrTagNode;
+      if (itemOrTag.startsWith("#")) {
+        itemOrTagNode = graph.findTag(itemOrTag as `#${string}:${string}`);
+        if (itemOrTagNode === null) {
+          itemOrTagNode = new TagGraphNode(
+            itemOrTag as `#${string}:${string}`,
+            tagType
+          );
+          graph.addNode(itemOrTagNode);
+        }
+      } else {
+        itemOrTagNode = graph.findItem(itemOrTag);
+        if (itemOrTagNode === null) {
+          itemOrTagNode = new ItemGraphNode(itemOrTag, tagType);
+          graph.addNode(itemOrTagNode);
+        }
       }
-      if (!itemNode.isTaggedWith(tag)) {
+
+      if (!itemOrTagNode.isTaggedWith(tag)) {
         graph.addEdge(
           new TaggedGraphEdge({
             startNode: tagNode,
-            endNode: itemNode,
+            endNode: itemOrTagNode,
           })
         );
       }
