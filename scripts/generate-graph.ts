@@ -76,11 +76,17 @@ function loadModData(modFolder) {
   const dataPath = `${modFolder}/data`;
   const namespaces = readdirSync(dataPath);
 
-  for (const namespace of namespaces) {
-    const base = `${dataPath}/${namespace}`;
-    loadTags(`${base}/tags`, namespace);
-    // loadRecipes(`${base}/recipes`);
-    // loadLootTables(`${base}/loot_tables`);
+  const tasks = [
+    { func: loadTags, addedPath: "tags" },
+    // { func: loadRecipes, addedPath: "recipes" },
+    // { func: loadLootTables, addedPath: "loot_tables" },
+  ];
+
+  for (const task of tasks) {
+    for (const namespace of namespaces) {
+      const base = `${dataPath}/${namespace}`;
+      task.func(`${base}/${task.addedPath}`, namespace);
+    }
   }
 }
 
